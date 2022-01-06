@@ -5,10 +5,11 @@ class NetworkHelper {
   NetworkHelper(this.url);
 
   final String url;
+  // final String url2;
 
   Future getData() async {
-    http.Response response = await http.get(url);
-
+    http.Response response = await http.get(Uri.parse(url));
+    // http.Response response2 = await http.get(Uri.parse(url2));
     if (response.statusCode == 200) {
       String data = response.body;
 
