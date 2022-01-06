@@ -1,3 +1,4 @@
+import 'package:clima/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'package:clima/services/weather.dart';
@@ -13,14 +14,14 @@ class LocationScreen extends StatefulWidget {
   _LocationScreenState createState() => _LocationScreenState();
 }
 
-class _LocationScreenState extends State<LocationScreen> {
+class _LocationScreenState extends State<LocationScreen> with SingleTickerProviderStateMixin{
   WeatherModel weather = WeatherModel();
   int temperature;
   String weatherIcon;
   String cityName;
-  String weatherMessage;
+  Color weatherMessage;
   String imagesToGrab;
-  //int humidity;
+  int humidity;
 
   @override
   void initState() {
@@ -34,7 +35,7 @@ class _LocationScreenState extends State<LocationScreen> {
       if (weatherData == null) {
         temperature = 0;
         weatherIcon = 'Error';
-        weatherMessage = 'Unable to get data Chill';
+        weatherMessage = Colors.white;
         cityName = '';
         return;
       }
@@ -44,11 +45,29 @@ class _LocationScreenState extends State<LocationScreen> {
       //weatherIcon = weather.getWeatherIcon(condition);
       weatherMessage = weather.getMessage(temperature);
       cityName = weatherData['name'];
-      //humidity = weatherData['main']['humidity'];
+      humidity = weatherData['main']['humidity'];
 
 
 
     });
+
+    AnimationController controller;
+    Animation animation;
+
+    controller = AnimationController(vsync: this, duration: Duration(seconds: 2));
+
+    animation = ColorTween(begin: Colors.white, end: Colors.black).animate(controller);
+    controller.forward();
+    controller.addListener(()  {setState(() {
+
+    });controller.value;});
+
+
+    void dispose(){
+      controller.dispose();
+      super.dispose();
+    }
+
   }
 
   @override
@@ -58,39 +77,33 @@ class _LocationScreenState extends State<LocationScreen> {
       body: Container(
 
 
-
-
         decoration: BoxDecoration(
-
+          gradient: KGradientCondtional
           // image:  new DecorationImage(
           //   image: weather== null ? print('abc'): imagesToGrab[0]
           // )
-           gradient: new LinearGradient(
-
-            begin: Alignment.topCenter,
-            end: Alignment.centerRight,
-            colors: <Color>[
-              Colors.blueGrey,
-              Colors.white
-            ],
 
 
+      ),
 
-)
 
-
-        ),
         child: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Row(
-                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
 
+                  Material(
+                    color: Colors.black,
+                  shadowColor: Colors.blueGrey,
+                  borderRadius: BorderRadius.circular(10.0),
+                  elevation: 13.0,
+                  child: MaterialButton(
 
-                  MaterialButton(
+
                     onPressed: () async {
                       var typedName = await Navigator.push(
                         context,
@@ -107,9 +120,9 @@ class _LocationScreenState extends State<LocationScreen> {
                         updateUI(weatherData);
                       }
                     },
-                    child: Center(child: Image.asset('images/compas.png',scale: 15.0))
+                    child: Icon(Icons.map_outlined, color: Colors.white,)
                   ),
-                ],
+              )],
               ),
               Padding(
                 padding: EdgeInsets.only(left: 120.0),
@@ -135,19 +148,19 @@ class _LocationScreenState extends State<LocationScreen> {
                 ),
               ),
               Padding
-                (padding: EdgeInsets.only(left: 10.0)
+                (padding: EdgeInsets.only(left: 130.0)
                 ,child: Row(children: [
 
                 Image.asset('images/fresh-air.png', scale: 8),
 
                 RichText(
                   text: TextSpan(
-                    text: 'acjh \n',
-                    style: GoogleFonts.getFont('Overpass',fontSize: 1.0,fontWeight: FontWeight.bold, color: Colors.black ),
+                    text: ' $humidity\n',
+                    style: GoogleFonts.getFont('Overpass',fontSize: 50.0,fontWeight: FontWeight.bold, color: Colors.black ),
                     children: [
                       TextSpan(
                           text: 'Humidity',
-                          style: GoogleFonts.getFont('Overpass',fontSize: 18.0,fontWeight: FontWeight.w600, color: Colors.grey )
+                          style: GoogleFonts.getFont('Overpass',fontSize: 20.0,fontWeight: FontWeight.w600, color: Colors.grey )
                       ),
 
                     ],
@@ -195,7 +208,7 @@ class _LocationScreenState extends State<LocationScreen> {
               )],
           ),
         ),
-      ),
+      )
     );
   }
 }

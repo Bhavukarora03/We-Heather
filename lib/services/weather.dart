@@ -1,7 +1,8 @@
 import 'dart:core';
-
+import 'package:clima/screens/location_screen.dart';
 import 'package:clima/services/location.dart';
 import 'package:clima/services/networking.dart';
+import 'package:clima/utilities/constants.dart';
 import 'package:flutter/cupertino.dart';
 
 const apiKey = '6a87b09ef87350967b1334c2394ec7de';
@@ -56,9 +57,9 @@ class WeatherModel {
   //   }
   // }
 
-  String getMessage(int temp) {
-    if (temp > 25) {
-      return 'It\'s 🍦 time';
+   getMessage(int temp) {
+    if (temp >= 15) {
+      return KGradientCondtional;
     } else if (temp > 20) {
       return 'Time for shorts and 👕';
     } else if (temp < 10) {

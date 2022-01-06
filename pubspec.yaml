@@ -24,8 +24,7 @@ flutter:
   uses-material-design: true
 
   assets:
-  - images/sun-dynamic-color.png
-  - images/heart-dynamic-color.png
+  - images/
 
   fonts:
   - family: Spartan MB

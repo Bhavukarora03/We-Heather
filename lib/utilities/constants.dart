@@ -39,4 +39,14 @@ icon: Icon(Icons.location_pin,size: 40.0,),
   ),
 );
 
+const KGradientCondtional = LinearGradient(
+
+begin: Alignment.topCenter,
+end: Alignment.centerRight,
+colors: <Color>[
+Colors.blueGrey,
+Colors.white
+]);
+
+
 
