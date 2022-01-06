@@ -1,6 +1,5 @@
 import 'package:clima/utilities/constants.dart';
 import 'package:flutter/material.dart';
-
 import 'package:clima/services/weather.dart';
 import 'city_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,20 +13,25 @@ class LocationScreen extends StatefulWidget {
   _LocationScreenState createState() => _LocationScreenState();
 }
 
-class _LocationScreenState extends State<LocationScreen> with SingleTickerProviderStateMixin{
+class _LocationScreenState extends State<LocationScreen> {
   WeatherModel weather = WeatherModel();
   int temperature;
   String weatherIcon;
   String cityName;
   Color weatherMessage;
-  String imagesToGrab;
+ // String imagesToGrab;
   int humidity;
+  String weatherSeason;
+  int  pressure;
+  double wind;
 
   @override
   void initState() {
     super.initState();
+    setState(() {
+      updateUI(widget.locationWeather);
+    });
 
-    updateUI(widget.locationWeather);
   }
 
   void updateUI(dynamic weatherData) {
@@ -36,37 +40,39 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
         temperature = 0;
         weatherIcon = 'Error';
         weatherMessage = Colors.white;
-        cityName = '';
+        cityName = '404 LOL';
         return;
       }
       double temp = weatherData['main']['temp'];
       temperature = temp.toInt();
       //var condition = weatherData['weather'][0]['id'];
       //weatherIcon = weather.getWeatherIcon(condition);
-      weatherMessage = weather.getMessage(temperature);
+      //weatherMessage = weather.getMessage(temperature);
       cityName = weatherData['name'];
       humidity = weatherData['main']['humidity'];
-
+      weatherSeason = weatherData['weather'][0]['main'];
+      pressure = weatherData['main']['pressure'];
+      wind = weatherData['wind']['speed'];
 
 
     });
 
-    AnimationController controller;
-    Animation animation;
-
-    controller = AnimationController(vsync: this, duration: Duration(seconds: 2));
-
-    animation = ColorTween(begin: Colors.white, end: Colors.black).animate(controller);
-    controller.forward();
-    controller.addListener(()  {setState(() {
-
-    });controller.value;});
-
-
-    void dispose(){
-      controller.dispose();
-      super.dispose();
-    }
+    // AnimationController controller;
+    // Animation animation;
+    //
+    // controller = AnimationController(vsync: this, duration: Duration(seconds: 2));
+    //
+    // animation = ColorTween(begin: Colors.white, end: Colors.black).animate(controller);
+    // controller.forward();
+    // controller.addListener(()  {setState(() {
+    //
+    // });controller.value;});
+    //
+    //
+    // void dispose(){
+    //   controller.dispose();
+    //   super.dispose();
+    // }
 
   }
 
@@ -78,7 +84,8 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
 
 
         decoration: BoxDecoration(
-          gradient: KGradientCondtional
+          gradient: KGradientCondtional,
+
           // image:  new DecorationImage(
           //   image: weather== null ? print('abc'): imagesToGrab[0]
           // )
@@ -125,20 +132,35 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
               )],
               ),
               Padding(
-                padding: EdgeInsets.only(left: 120.0),
+                padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
 
                 child: Row(
 
                   children: <Widget>[
-                    Image.asset('images/thermometer.png', scale: 8),
+                    Image.asset('images/24.png', scale: 45.0),
                     RichText(
                       text: TextSpan(
                         text: '$temperature°C\n',
-                        style: GoogleFonts.getFont('Overpass',fontSize: 50.0,fontWeight: FontWeight.bold, color: Colors.black ),
+                        style: GoogleFonts.getFont('Overpass',fontSize: 35.0,fontWeight: FontWeight.bold, color: Colors.black ),
                         children: [
                           TextSpan(
                             text: 'Current temp',
-                              style: GoogleFonts.getFont('Overpass',fontSize: 18.0,fontWeight: FontWeight.w600, color: Colors.grey )
+                              style: GoogleFonts.getFont('Overpass',fontSize: 18.0,fontWeight: FontWeight.w600, color: Colors.black54)
+                          ),
+
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 50.0,),
+                    Image.asset('images/6.png', scale: 45.0),
+                    RichText(
+                      text: TextSpan(
+                        text: '$wind  \n',
+                        style: GoogleFonts.getFont('Overpass',fontSize: 35.0,fontWeight: FontWeight.bold, color: Colors.black ),
+                        children: [
+                          TextSpan(
+                              text: 'Wind Km/h',
+                              style: GoogleFonts.getFont('Overpass',fontSize: 18.0,fontWeight: FontWeight.w600, color: Colors.black54 )
                           ),
 
                         ],
@@ -148,25 +170,44 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
                 ),
               ),
               Padding
-                (padding: EdgeInsets.only(left: 130.0)
+                (padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0)
                 ,child: Row(children: [
 
-                Image.asset('images/fresh-air.png', scale: 8),
+                Image.asset('images/3.png', scale: 45.0),
 
                 RichText(
                   text: TextSpan(
-                    text: ' $humidity\n',
-                    style: GoogleFonts.getFont('Overpass',fontSize: 50.0,fontWeight: FontWeight.bold, color: Colors.black ),
+                    text: ' $humidity %\n',
+                    style: GoogleFonts.getFont('Overpass',fontSize: 35.0,fontWeight: FontWeight.bold, color: Colors.black ),
                     children: [
                       TextSpan(
-                          text: 'Humidity',
-                          style: GoogleFonts.getFont('Overpass',fontSize: 20.0,fontWeight: FontWeight.w600, color: Colors.grey )
+                          text: '  Humidity',
+                          style: GoogleFonts.getFont('Overpass',fontSize: 20.0,fontWeight: FontWeight.w600, color: Colors.black54 )
                       ),
 
                     ],
                   ),
-                )
-              ],),),
+                ),
+                  SizedBox(width: 50.0,),
+                  Image.asset('images/39.png', scale: 45.0),
+
+                  RichText(
+                    text: TextSpan(
+                      text: ' $weatherSeason\n',
+                      style: GoogleFonts.getFont('Overpass',fontSize: 35.0,fontWeight: FontWeight.bold, color: Colors.black ),
+                      children: [
+                        TextSpan(
+                            text: '  Condition',
+                            style: GoogleFonts.getFont('Overpass',fontSize: 20.0,fontWeight: FontWeight.w600, color: Colors.black54)
+                        ),
+
+                      ],
+                    ),
+                  )
+              ],
+
+                ),
+              ),
               Padding(
                 padding: EdgeInsets.only(left: 100.0)
 ,                child: Row(
@@ -200,7 +241,7 @@ class _LocationScreenState extends State<LocationScreen> with SingleTickerProvid
                   updateUI(weatherData);
                 },
                 child: Image.asset('images/map-pin.png',
-                scale: 10.0,
+                scale: 20.0,
                 //height: 150.0,
                 //width: 200.0),
               ),

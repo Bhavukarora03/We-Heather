@@ -11,10 +11,11 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.4
-  geolocator: ^8.0.1
+  geolocator: ^7.0.0
   http: ^0.13.4
   flutter_spinkit: ^5.1.0
   google_fonts: ^2.2.0
+  intro_screen_onboarding_flutter: ^0.1.5
 
 dev_dependencies:
   flutter_test:

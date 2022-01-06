@@ -57,15 +57,15 @@ class WeatherModel {
   //   }
   // }
 
-   getMessage(int temp) {
-    if (temp >= 15) {
-      return KGradientCondtional;
-    } else if (temp > 20) {
-      return 'Time for shorts and 👕';
-    } else if (temp < 10) {
-      return 'You\'ll need 🧣 and 🧤';
-    } else {
-      return 'Bring a 🧥 just in case';
-    }
-  }
+  //  getMessage(int temp) {
+  //   if (temp >= 15) {
+  //     return KGradientCondtional;
+  //   } else if (temp > 20) {
+  //     return 'Time for shorts and 👕';
+  //   } else if (temp < 10) {
+  //     return 'You\'ll need 🧣 and 🧤';
+  //   } else {
+  //     return 'Bring a 🧥 just in case';
+  //   }
+  // }
 }
