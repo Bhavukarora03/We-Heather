@@ -3,6 +3,7 @@ import 'location_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:clima/services/weather.dart';
 
+
 class LoadingScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {

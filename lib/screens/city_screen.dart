@@ -47,6 +47,7 @@ class _CityScreenState extends State<CityScreen> {
                   child: Icon(
                     Icons.arrow_back_ios,
                     size: 30.0,
+                    color:Colors.black54
                   ),
                 ),
               ),
