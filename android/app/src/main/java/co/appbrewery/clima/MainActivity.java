@@ -1,4 +1,4 @@
-package co.appbrewery.clima;
+package xyz.bhavuk.meowsome;
 
 import io.flutter.embedding.android.FlutterActivity;
 

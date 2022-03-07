@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intro_screen_onboarding_flutter/intro_app.dart';
-import 'package:intro_screen_onboarding_flutter/introduction.dart';
+
 import 'package:clima/screens/loading_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,18 +17,18 @@ class _TestScreenState extends State<TestScreen> {
 
   final List<Introduction> list = [
     Introduction(
-      title: 'Damn the Weather'.toUpperCase(),
-      subTitle: 'I know bish, its still in Beta. i would like to know from you, what else i can add?',
+      title: 'Why did the cloud stay home?'.toUpperCase(),
+      subTitle: 'Because it was feeling under the weather! From  temperature to humidity, I Gotchu!',
       imageUrl: 'images/3.png',
     ),
     Introduction(
       title: 'Search any place'.toUpperCase(),
-      subTitle: 'I mean yeah. I ll be adding more features soon. but this is kinda okay too',
+      subTitle: 'If you are sitting in Germany and wondering how is the weather in New York, I Gotchu',
       imageUrl: 'images/17.png',
     ),
     Introduction(
-      title: 'Buy me  biryani'.toUpperCase(),
-      subTitle: 'Cmon you know my address. just Zomato me. okay enjoy',
+      title: "what's the weather like today".toUpperCase(),
+      subTitle: 'Windy ? humid ? How about we find out using this weather app. Allow me to get your location coordinates',
       imageUrl: 'images/27.png',
     ),
 

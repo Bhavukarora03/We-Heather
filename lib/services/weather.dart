@@ -1,10 +1,7 @@
 import 'dart:core';
-import 'package:clima/screens/location_screen.dart';
 import 'package:clima/services/location.dart';
 import 'package:clima/services/networking.dart';
-import 'package:clima/utilities/constants.dart';
 import 'package:flutter/cupertino.dart';
-
 const apiKey = '6a87b09ef87350967b1334c2394ec7de';
 const openWeatherMapURL = 'https://api.openweathermap.org/data/2.5/weather';
 const openAQIURL = 'https://api.openweathermap.org/data/2.5/air_pollution';
@@ -30,7 +27,7 @@ class WeatherModel {
   }
 
 
-  final Map<String, AssetImage> imagesToGrab = {'cold': AssetImage('assets/sun-dynamic-color.png'), 'rainy':  AssetImage("assets/heart-dynamic-color.png")};
+  //final Map<String, AssetImage> imagesToGrab = {'cold': AssetImage('assets/sun-dynamic-color.png'), 'rainy':  AssetImage("assets/heart-dynamic-color.png")};
 
   // {'sunny': AssetImage('images/sun-dynamic-color.png'),
   //   'Cold': AssetImage("assets/heart-dynamic-color.png"),

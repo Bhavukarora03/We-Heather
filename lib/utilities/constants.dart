@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 
 const kMessageTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
@@ -7,9 +7,10 @@ const kMessageTextStyle = TextStyle(
 );
 
 const kButtonTextStyle = TextStyle(
-  fontSize: 20,
+  letterSpacing: 2,
+  fontSize: 15,
   fontFamily: 'Spartan MB',
-  color: Colors.black54,
+  color: Colors.grey,
 );
 
 const kConditionTextStyle = TextStyle(
@@ -17,26 +18,28 @@ const kConditionTextStyle = TextStyle(
 );
 
 const kTextFieldInputDecoration = InputDecoration(
-  icon: Icon(
+  prefixIcon: Icon(
 
-    Icons.location_pin,
-    color: Colors.black54,
+  Icons.location_pin,
+  color: Colors.black54,
 
-    size: 40.0,
-  ),
-  hintText: 'Enter the City',
-  hintStyle: TextStyle(color: Colors.grey),
-  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+
+),
+label: Text('Enter the city'),
+  labelStyle: TextStyle(color: Colors.grey),
+  // hintText: 'Enter the City',
+  // hintStyle: TextStyle(color: Colors.grey),
+  contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 5.0),
   border: OutlineInputBorder(
-    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    borderRadius: BorderRadius.zero
   ),
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(color: Colors.black38, width: 1.0),
-    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+    borderRadius: BorderRadius.all(Radius.circular(10.0)),
   ),
   focusedBorder: OutlineInputBorder(
     borderSide: BorderSide(color: Colors.black, width: 2.0),
-    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+    borderRadius: BorderRadius.all(Radius.circular(10.0)),
   ),
 );
 
