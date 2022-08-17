@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "312015653735",
+    "project_id": "botstorm-7b559",
+    "storage_bucket": "botstorm-7b559.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312015653735:android:afec0540ef3d2bbf4fbdc2",
+        "android_client_info": {
+          "package_name": "me.bhavuk.botstorm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "312015653735-52dlsio5m7l6pl7el2teu12l77g50ojp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.bhavuk.botstorm",
+            "certificate_hash": "3de86dea0234908a5853dce94b85827913106e32"
+          }
+        },
+        {
+          "client_id": "312015653735-pa7q9npq82bt8dl6ddktln92hpna02ac.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCk6PnaAn7CyHUdaTwQzCjJCbB12O38Awo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "312015653735-pa7q9npq82bt8dl6ddktln92hpna02ac.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

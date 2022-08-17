@@ -36,6 +36,9 @@
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
 
+Key.properties
+app/upload-keystore.jks
+
 # iOS/XCode related
 **/ios/Flutter/flutter_export_environment.sh
 **/ios/**/*.mode1v3

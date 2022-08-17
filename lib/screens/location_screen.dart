@@ -1,27 +1,32 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:clima/Getx/Getx_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:clima/services/weather.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import '../utilities/constants.dart';
 import 'city_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
-//import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
-class LocationScreen extends StatefulWidget {
-  LocationScreen({this.locationWeather});
-  static const id = 'LocationScreen';
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({@required this.locationWeather});
   final locationWeather;
 
   @override
-  _LocationScreenState createState() => _LocationScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _LocationScreenState extends State<LocationScreen>
+class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
+  TextEditingController textEditingController = TextEditingController();
 
   WeatherModel weather = WeatherModel();
   int temperature;
   String weatherIcon;
-  static String cityName;
+  String cityName;
   Color weatherMessage;
 
   int humidity;
@@ -30,12 +35,10 @@ class _LocationScreenState extends State<LocationScreen>
   double wind;
   String imagesToCapture;
 
-  // AnimationController controller;
-  // Animation animation;
-
   @override
   void initState() {
     super.initState();
+    Get.find<AuthenticationController>().checkInternetConnection();
     setState(() {
       updateUI(widget.locationWeather);
       //SystemChrome.setEnabledSystemUIOverlays([]);
@@ -53,121 +56,139 @@ class _LocationScreenState extends State<LocationScreen>
         temperature = 0;
         weatherIcon = 'Error';
         //weatherMessage = Colors.white;
-        cityName = 'Could not Fetch Data';
+        cityName = 'Retry';
         return;
       }
       double temp = weatherData['main']['temp'];
       temperature = temp.toInt();
       //var condition = weatherData['weather'][0]['id'];
-      //weatherIcon = weather.getWeatherIcon(condition);
-      // weatherMessage = weather.getMessage(temperature);
       cityName = weatherData['name'];
       humidity = weatherData['main']['humidity'];
       weatherSeason = weatherData['weather'][0]['main'];
       pressure = weatherData['main']['pressure'];
-      //  wind = weatherData['wind']['speed'];
+      wind = weatherData['wind']['speed'];
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    var format = DateFormat.yMEd().add_jms().format(DateTime.now());
+
     return Scaffold(
-
-
-      body:
-     Container(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            radius: 2.3,
-
-            center: Alignment.topCenter,
-            // begin: Alignment.topCenter,
-            // end: Alignment.bottomLeft,
-
-            colors: [Colors.black, Colors.white],
-            stops: [0.6, .45],
-          ),
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        toolbarHeight: 0,
+        automaticallyImplyLeading: false,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          // Status bar color
+          statusBarColor: Colors.black,
+          // Status bar brightness (optional)
+          statusBarIconBrightness: Brightness.light, // For Android (dark icons)
+          // For iOS (dark icons)
         ),
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 40),
-                    child: RichText(
-                      text: TextSpan(
-                          text: "Today's Report",
-                          style: GoogleFonts.roboto(
-                              fontSize: 30,
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w900),
-                          children: [
-                            TextSpan(
-                              text: '\n\nIn  ',
-                              style: GoogleFonts.overpass(
-                                  color: Colors.white70, fontSize: 15),
-                            ),
-                            TextSpan(
-                                text: '$cityName',
-                                style: GoogleFonts.roboto(
-                                    color: Colors.white70,
-                                    fontSize: 20,
-                                    letterSpacing: 1,
-                                    fontWeight: FontWeight.w700)),
-                          ]),
+      ),
+      body: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+            gradient: RadialGradient(
+              radius: 2.3,
+              center: Alignment.topCenter,
+              colors: [Colors.black, Colors.white],
+              stops: [0.7, .45],
+            ),
+          ),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 30, right: 30, top: 50, bottom: 40),
+                  child: TextField(
+                      textInputAction: TextInputAction.done,
+                      cursorColor: Colors.white70,
+                      enableSuggestions: true,
+                      controller: textEditingController,
+                      showCursor: true,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                      decoration: kTextFieldInputDecoration.copyWith(),
+                      onSubmitted: (value) async {
+                        var weatherData = await weather.getCityWeather(value);
+                        updateUI(weatherData);
+                        setState(() {
+                          textEditingController.clear();
+                        });
+                      }),
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(right: 100),
+                      child: RichText(
+                        text: TextSpan(
+                            text: "Today's report in",
+                            style: GoogleFonts.roboto(
+                                fontSize: 22,
+                                color: Colors.white70,
+                                fontWeight: FontWeight.w900),
+                            children: [
+                              TextSpan(
+                                text: '\n\nIn  ',
+                                style: GoogleFonts.overpass(
+                                    color: Colors.white70, fontSize: 15),
+                              ),
+                              TextSpan(
+                                  text: '$cityName',
+                                  style: GoogleFonts.roboto(
+                                      color: Colors.white70,
+                                      fontSize: 20,
+                                      letterSpacing: 1,
+                                      fontWeight: FontWeight.w700)),
+                              TextSpan(
+                                  text:
+                                      '\n\n(${DateFormat.jm().format(DateTime.now())})',
+                                  style: GoogleFonts.roboto(
+                                      color: Colors.white70,
+                                      fontSize: 15,
+                                      letterSpacing: 1,
+                                      fontWeight: FontWeight.w700))
+                            ]),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 40),
-                    child: FloatingActionButton(
-                        heroTag: "btn2",
-                        backgroundColor: Colors.white,
-                        focusColor: Colors.white70,
-                        foregroundColor: Colors.black,
-                        elevation: 10,
-                        //color: Colors.black,
-                        onPressed: () async {
-                          var typedName = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return CityScreen();
-                              },
-                            ),
-                          );
-                          if (typedName != null) {
-                            var weatherData =
-                                await weather.getCityWeather(typedName);
-                            updateUI(weatherData);
-                          }
-                        },
-                        child: Icon(
-                          Icons.share_location,
-                          color: Colors.black,
-                        )),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.all(0),
-                child: Column(
+                    FloatingActionButton(
+                      heroTag: "btn1",
+                      backgroundColor: Colors.white,
+                      elevation: 10,
+                      onPressed: () async {
+                        var weatherData = await weather.getLocationWeather();
+                        updateUI(weatherData);
+                      },
+                      child: Icon(Icons.location_pin,
+                          size: 30, color: Colors.black87),
+                    )
+                  ],
+                ),
+                SizedBox(height: 30),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     AnimatedSwitcher(
                         reverseDuration: Duration(milliseconds: 1500),
                         duration: Duration(milliseconds: 1500),
+
                         child: temperature <= 5
                             ? Container(
-                                height: 200,
-                                width: 200,
+                                height: 150,
+                                width: 150,
                                 key: Key('1'),
-                                child: Lottie.network(
-                                  'https://assets10.lottiefiles.com/packages/lf20_hf07cbmv.json',
+                                child: Lottie.asset(
+                                  'Lottie/snowy.json',
                                   //  scale: 14,
                                 ),
                                 // decoration : BoxDecoration(image: DecorationImage(image: AssetImage('images/3.png',)))
@@ -177,8 +198,8 @@ class _LocationScreenState extends State<LocationScreen>
                                     height: 200,
                                     width: 200,
                                     key: Key('2'),
-                                    child: Lottie.network(
-                                      'https://assets10.lottiefiles.com/temp/lf20_RHbbn6.json',
+                                    child: Lottie.asset(
+                                      'Lottie/night.json',
                                     ),
                                     //decoration : BoxDecoration(image: DecorationImage(image: AssetImage('images/27.png',) ))
                                   )
@@ -187,8 +208,8 @@ class _LocationScreenState extends State<LocationScreen>
                                         height: 200,
                                         width: 200,
                                         key: Key('3'),
-                                        child: Lottie.network(
-                                          'https://assets10.lottiefiles.com/temp/lf20_Jj2Qzq.json',
+                                        child: Lottie.asset(
+                                          'Lottie/cloudy.json',
                                         ),
                                         //decoration : BoxDecoration(image: DecorationImage(image: AssetImage('images/27.png',) ))
                                       )
@@ -197,8 +218,8 @@ class _LocationScreenState extends State<LocationScreen>
                                             height: 200,
                                             width: 200,
                                             key: Key('4'),
-                                            child: Lottie.network(
-                                              'https://assets5.lottiefiles.com/temp/lf20_BSVgyt.json',
+                                            child: Lottie.asset(
+                                              'Lottie/humidity.json',
                                             ),
                                             //decoration : BoxDecoration(image: DecorationImage(image: AssetImage('images/27.png',) ))
                                           )
@@ -207,18 +228,18 @@ class _LocationScreenState extends State<LocationScreen>
                                                 height: 200,
                                                 width: 200,
                                                 key: Key('5'),
-                                                child: Lottie.network(
-                                                  'https://assets4.lottiefiles.com/private_files/lf30_j1g2rpsv.json',
+                                                child: Lottie.asset(
+                                                  'Lottie/night.json',
                                                 ),
                                                 //decoration : BoxDecoration(image: DecorationImage(image: AssetImage('images/27.png',) ))
                                               )
                                             : temperature >= 26
                                                 ? Container(
-                                                    height: 200,
-                                                    width: 200,
+                                                    height: 100,
+                                                    width: 100,
                                                     key: Key('6'),
-                                                    child: Lottie.network(
-                                                      'https://assets10.lottiefiles.com/temp/lf20_Stdaec.json',
+                                                    child: Lottie.asset(
+                                                      'Lottie/sunny.json',
                                                     ),
                                                     //decoration : BoxDecoration(image: DecorationImage(image: AssetImage('images/27.png',) ))
                                                   )
@@ -245,105 +266,96 @@ class _LocationScreenState extends State<LocationScreen>
                     ),
                   ],
                 ),
-              ),
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(children: [
-                     Lottie.network('https://assets9.lottiefiles.com/packages/lf20_74gqrlus.json', height: 20, width: 20),
-                      SizedBox(height: 10.0),
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          text: '$humidity %\n',
-                          style: GoogleFonts.getFont('Overpass',
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black54),
-                          children: [
-                            TextSpan(
-                              text: 'Humidity',
+                SizedBox(height: 80),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(children: [
+                        Lottie.asset('Lottie/humidity.json',
+                            height: 20, width: 20),
+                        SizedBox(height: 10.0),
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            text: '$humidity %\n',
+                            style: GoogleFonts.getFont('Overpass',
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54),
+                            children: [
+                              TextSpan(
+                                text: 'Humidity',
+                                style: GoogleFonts.getFont('Overpass',
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ]),
+                      Column(
+                        children: [
+                          Lottie.asset(
+                              'Lottie/pressure.json',
+                              height: 20,
+                              width: 20),
+                          SizedBox(height: 10.0),
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              text: '$pressure\n',
                               style: GoogleFonts.getFont('Overpass',
-                                  fontSize: 12.0,
+                                  fontSize: 15.0,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.grey),
+                                  color: Colors.black54),
+                              children: [
+                                TextSpan(
+                                  text: 'Pressure',
+                                  style: GoogleFonts.getFont('Overpass',
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ]),
-                    Column(
-                      children: [
-                        Lottie.network('https://assets3.lottiefiles.com/packages/lf20_4pku29fg.json'
-                            , height: 20, width: 20),
-                        SizedBox(height: 10.0),
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            text: '$pressure\n',
-                            style: GoogleFonts.getFont('Overpass',
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black54),
-                            children: [
-                              TextSpan(
-                                text: 'Pressure',
-                                style: GoogleFonts.getFont('Overpass',
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey),
-                              ),
-                            ],
+                      Column(
+                        children: [
+                          Lottie.asset('Lottie/wind.json',
+                              height: 20, width: 20),
+                          SizedBox(height: 10.0),
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              text: '$wind \n',
+                              style: GoogleFonts.getFont('Overpass',
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black54),
+                              children: [
+                                TextSpan(
+                                  text: 'Wind Km/h',
+                                  style: GoogleFonts.getFont('Overpass',
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Lottie.network('https://assets6.lottiefiles.com/packages/lf20_qdgvz2hn.json', height: 20, width: 20),
-                        SizedBox(height: 10.0),
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            text: '$wind \n',
-                            style: GoogleFonts.getFont('Overpass',
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black54),
-                            children: [
-                              TextSpan(
-                                text: 'Wind Km/h',
-                                style: GoogleFonts.getFont('Overpass',
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Column(
-                children: [
-                  FloatingActionButton(
-                    heroTag: "btn1",
-                    backgroundColor: Colors.white,
-                    elevation: 10,
-                    onPressed: () async {
-                      var weatherData = await weather.getLocationWeather();
-                      updateUI(weatherData);
-                    },
-                    child: Icon(Icons.location_pin,
-                        size: 30, color: Colors.black87),
-                  )
-                ],
-              )
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -351,26 +363,3 @@ class _LocationScreenState extends State<LocationScreen>
   }
 }
 
-// AnimatedCrossFade(
-// firstChild: Image.asset(
-// 'images/23.png',
-// scale: 14,
-// ),
-// secondChild: Image.asset(
-// 'images/17.png',
-// scale: 14,
-// ),
-// crossFadeState: temperature <= 15
-// ? CrossFadeState.showFirst
-//     : CrossFadeState.showSecond,
-// duration: Duration(milliseconds: 1000)),
-// temperature <= 10
-// ? Image.asset(
-// 'images/23.png',
-//
-// )
-// : temperature >= 11 || temperature <= 20
-// ? Image.asset('images/17.png', scale: 14)
-// : temperature >= 21 || temperature > 30
-// ? Image.asset('images/27.png', scale: 15)
-// : Center(),

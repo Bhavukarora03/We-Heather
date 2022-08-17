@@ -18,10 +18,11 @@ const kConditionTextStyle = TextStyle(
 );
 
 const kTextFieldInputDecoration = InputDecoration(
+
   prefixIcon: Icon(
 
   Icons.location_pin,
-  color: Colors.black54,
+  color: Colors.grey
 
 
 ),
@@ -34,11 +35,11 @@ label: Text('Enter the city'),
     borderRadius: BorderRadius.zero
   ),
   enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.black38, width: 1.0),
+    borderSide: BorderSide(color: Colors.white24, width: 1.0),
     borderRadius: BorderRadius.all(Radius.circular(10.0)),
   ),
   focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.black, width: 2.0),
+    borderSide: BorderSide(color: Colors.white70, width: 2.0),
     borderRadius: BorderRadius.all(Radius.circular(10.0)),
   ),
 );

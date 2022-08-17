@@ -1,70 +1,115 @@
+import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:clima/Getx/Getx_controller.dart';
+import 'package:extended_image/extended_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:avatar_glow/avatar_glow.dart';
-import 'package:lottie/lottie.dart';
-import 'package:clima/screens/location_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfileScreen extends StatefulWidget {
-  static const id = "ProfileScreen";
+class ProfileSceen extends StatefulWidget {
+  const ProfileSceen({Key key}) : super(key: key);
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<ProfileSceen> createState() => _ProfileSceenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileSceenState extends State<ProfileSceen> {
+  final AuthenticationController controller =
+      Get.put(AuthenticationController());
+  @override
+  initState() {
+    super.initState();
+    controller.checkInternetConnection();
+    initializeValues();
+  }
+
+  String userName = "";
+  String imgUrl = "";
+  String mail = "";
+  SharedPreferences prefs;
+  initializeValues() async {
+    prefs = await SharedPreferences.getInstance();
+    String doctorName = prefs.getString("name");
+    String imageURL = prefs.getString("ProfileURL");
+    String mailId = prefs.getString("mailID");
+    setState(() {
+      userName = doctorName;
+      imgUrl = imageURL;
+      mail = mailId;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    final url = Uri.parse(imgUrl);
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Text(
-            "Bhavuk",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900),
-          )),
       backgroundColor: Colors.white,
-      body: Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: ListView(
           children: [
-            AvatarGlow(
-              endRadius: 60.0,
-              child: Material(
-                // Replace this child with your own
-                elevation: 8.0,
-                shape: CircleBorder(),
+            // user card
+            CachedNetworkImage(
+              imageUrl: imgUrl,
+              imageBuilder: (context, imageProvider) => Padding(
+                padding: const EdgeInsets.all(50.0),
                 child: CircleAvatar(
-                  backgroundColor: Colors.grey[100],
-                  child: Lottie.network(
-                    'https://assets8.lottiefiles.com/packages/lf20_ia8jpabk.json',
-                    height: 40,
-                  ),
-                  radius: 50.0,
+
+                  foregroundImage: imageProvider,
+                  radius: 80,
+
                 ),
               ),
+              placeholder: (context, url) => SpinKitCircle(color: Colors.white, size: 50.0),
+              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
-            RichText(
-              text: TextSpan(
-                text: "Bhavuk\n",
-                style: TextStyle(color: Colors.black, fontSize: 20),
-                children: [
-                  TextSpan(
-                    text: 'ROHINI',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 9,
-                        fontWeight: FontWeight.w200),
-                  )
-                ],
-              ),
+            Divider(
+              color: Colors.black87,
+              indent: 50,
+              endIndent: 50,
+              height: 30,
+              thickness: .5,
+            ),
+            SettingsGroup(
+              settingsGroupTitleStyle: TextStyle(color: Colors.black87),
+              iconItemSize: 20,
+              items: [
+                SettingsItem(
+                  onTap: () {},
+                  icons: CupertinoIcons.person,
+                  iconStyle: IconStyle(
+                    backgroundColor: Colors.black87,
+                  ),
+                  title: userName == "" ? "User not signed in" : "${userName}",
+                  titleStyle: TextStyle(color: Colors.black87),
+                  subtitle: mail == "" ? "Welcome" : "${mail}",
+                ),
+                SettingsItem(
+                  onTap: () {
+                    Get.find<AuthenticationController>().logout();
+                  },
+                  icons: Icons.logout,
+                  iconStyle: IconStyle(
+                    iconsColor: Colors.white,
+                    withBackground: true,
+                    backgroundColor: Colors.black87,
+                  ),
+                  titleStyle: TextStyle(color: Colors.black87),
+                  title: 'Logout',
+                  subtitle: "You have to sign in again for updates",
+                ),
+
+              ],
             ),
 
           ],
-
         ),
-
-
       ),
-
-
     );
   }
 }
+
+
